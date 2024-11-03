@@ -1,0 +1,23 @@
+public class ServiceInfo 
+{
+    private String serviceId;
+    private String serviceType;
+    private double serviceCost;
+    private LocalDateTime serviceDate;
+    private LocalDateTime estimatedCompletionTime;
+
+    public ServiceInfo(String serviceId, String serviceType, double serviceCost, LocalDateTime serviceDate, LocalDateTime estimatedCompletionTime) 
+    {
+        this.serviceId = serviceId;
+        this.serviceType = serviceType;
+        this.serviceCost = serviceCost;
+        this.serviceDate = serviceDate;
+        this.estimatedCompletionTime = estimatedCompletionTime;
+    }
+
+    public String getServiceId() { return serviceId; }
+    public String getServiceType() { return serviceType; }
+    public double getServiceCost() { return serviceCost; }
+    public LocalDateTime getServiceDate() { return serviceDate; }
+    public LocalDateTime getEstimatedCompletionTime() { return estimatedCompletionTime; }
+}
