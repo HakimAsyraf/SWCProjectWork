@@ -1,0 +1,139 @@
+import java.io.*;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
+public class ServiceCenter implements Serializable 
+{
+    private static final long serialVersionUID = 1L;
+
+    // Data structures to manage customers, service lanes, and transactions.
+    private LinkedList<CustomerInfo> customerList = new LinkedList<>();
+    private Queue<CustomerInfo> lane1 = new LinkedList<>();
+    private Queue<CustomerInfo> lane2 = new LinkedList<>();
+    private Queue<CustomerInfo> lane3 = new LinkedList<>();
+    private Stack<Transaction> completeStack = new Stack<>();
+
+    // Save customer data to a file for persistence.
+    public void saveData() 
+    {
+        try 
+        
+        (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("customer_data.dat"))) 
+        {
+            oos.writeObject(customerList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Load customer data from a file on startup.
+    @SuppressWarnings("unchecked")
+    public void loadData() 
+    {
+        try 
+        
+        (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("customer_data.dat"))) {
+            customerList = (LinkedList<CustomerInfo>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("No previous data found.");
+        }
+    }
+
+    // Add a new customer to the system.
+    public void addCustomer(CustomerInfo customer) 
+    {
+        customerList.add(customer);
+    }
+
+    // Remove a customer by index from the list.
+    public void removeCustomer(int index) 
+    {
+        if (index >= 0 && index < customerList.size()) 
+        {
+            customerList.remove(index);
+        }
+    }
+
+    // Retrieve a specific customer by their ID.
+    public CustomerInfo getCustomerById(String customerId) 
+    {
+        for (CustomerInfo customer : customerList) 
+        {
+            if (customer.getCustomerId().equals(customerId)) 
+            {
+                return customer;
+            }
+        }
+        return null;  // Return null if customer is not found.
+    }
+
+    // Add a new transaction to the stack of completed transactions.
+    public void addTransaction(Transaction transaction) 
+    {
+        completeStack.push(transaction);
+    }
+
+    // Process customers by assigning them to appropriate service lanes.
+    public void processCustomerForLane(CustomerInfo customer) 
+    {
+        int serviceCount = customer.getServices().size();
+        if (serviceCount <= 3) 
+        {
+            // Assign to Lane 1 or Lane 2 based on the size of the queues.
+            if (lane1.size() <= lane2.size()) {
+                lane1.add(customer);
+            } else {
+                lane2.add(customer);
+            }
+        } else {
+            // Assign to Lane 3 if the customer has more than 3 services.
+            lane3.add(customer);
+        }
+    }
+
+    // Process all service lanes and store completed transactions in the stack.
+    public void processServices() 
+    {
+        processLane(lane1);
+        processLane(lane2);
+        processLane(lane3);
+    }
+
+    // Helper method to process a specific service lane.
+    private void processLane(Queue<CustomerInfo> lane) 
+    {
+        while (!lane.isEmpty()) 
+        {
+            CustomerInfo customer = lane.poll();
+            Transaction transaction = new Transaction(customer);  // Create a new transaction.
+            completeStack.push(transaction);  // Store the transaction in the stack.
+        }
+    }
+
+    // Display all completed transactions (for testing and debugging purposes).
+    public void displayCompletedTransactions() 
+    {
+        if (completeStack.isEmpty()) 
+        {
+            System.out.println("No completed transactions.");
+        } else {
+            while (!completeStack.isEmpty()) 
+            {
+                Transaction transaction = completeStack.pop();
+                System.out.println(transaction.getTransactionSummary());
+            }
+        }
+    }
+
+    public void removeCustomerById(String customerId) 
+    {
+    customerList.removeIf(customer -> customer.getCustomerId().equals(customerId));
+    }
+
+    // Retrieve the list of all customers.
+    public LinkedList<CustomerInfo> getCustomerList() 
+    {
+        return customerList;
+    }
+}
