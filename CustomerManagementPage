@@ -1,0 +1,240 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+
+public class CustomerManagementPage extends JFrame 
+{
+    private ServiceCenter center;  // Reference to the service center.
+    private JTable table;
+    private DefaultTableModel tableModel;
+
+    public CustomerManagementPage(ServiceCenter center) 
+    {
+        this.center = center;
+
+        setTitle("Customer Management");
+        setSize(800, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // Define column headers.
+        String[] columnNames = {"Customer ID", "Customer Name", "Vehicle Plate", 
+                                "Service Type", "Service Cost"};
+        tableModel = new DefaultTableModel(columnNames, 0);
+        table = new JTable(tableModel);
+
+        loadCustomerData();  // Load existing customer data.
+
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        // Create buttons.
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton addButton = new JButton("Add Customer");
+        JButton editButton = new JButton("Edit Customer");
+        JButton deleteButton = new JButton("Delete Customer");
+        JButton paymentButton = new JButton("Process Payment");
+        JButton backButton = new JButton("Back to Menu");
+
+        // Button actions.
+        addButton.addActionListener(e -> addNewCustomer());
+        deleteButton.addActionListener(e -> deleteCustomer(table.getSelectedRow()));
+        paymentButton.addActionListener(e -> openTransactionPage(table.getSelectedRow()));
+        backButton.addActionListener(e -> 
+        {
+            new MenuPage(center);  // Navigate back to the menu.
+            dispose();
+        });
+
+        // Add buttons to the panel.
+        buttonPanel.add(addButton);
+        buttonPanel.add(editButton);
+        buttonPanel.add(deleteButton);
+        buttonPanel.add(paymentButton);
+        buttonPanel.add(backButton);
+
+        // Add components to the frame.
+        add(scrollPane, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        setVisible(true);
+    }
+
+    // Load customer data into the table.
+    private void loadCustomerData() 
+    {
+        File file = new File("customers.txt");
+
+        // Check if the file exists; if not, create it.
+        if (!file.exists()) {
+            try {
+                file.createNewFile(); // Create the file if it doesn't exist
+                JOptionPane.showMessageDialog(this, "customers.txt file created. Please add customer data.",
+                        "File Created", JOptionPane.INFORMATION_MESSAGE);
+                return; // Exit the method after creating the file
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error creating customers file: " + e.getMessage(),
+                        "File Creation Error", JOptionPane.ERROR_MESSAGE);
+                return; // Exit the method if there's an error
+            }
+        }
+
+        // Load customer data from the existing file
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(","); // Assuming data is comma-separated
+                if (parts.length >= 5) {
+                    String customerId = parts[0].trim();
+                    String customerName = parts[1].trim();
+                    String vehiclePlate = parts[2].trim();
+                    String serviceType = parts[3].trim();
+                    double serviceCost = Double.parseDouble(parts[4].trim());
+                    
+                    // Create CustomerInfo and ServiceInfo objects
+                    CustomerInfo customer = new CustomerInfo(customerId, customerName, vehiclePlate);
+                    ServiceInfo service = new ServiceInfo("serviceId", serviceType, serviceCost, null, null);
+                    customer.addService(service);
+                    
+                    // Add customer to the table
+                    Object[] rowData = { customerId, customerName, vehiclePlate, serviceType, String.format("RM %.2f", serviceCost) };
+                    tableModel.addRow(rowData);
+                    
+                    // Add customer to the service center
+                    center.addCustomer(customer);
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error reading customers file: " + e.getMessage(),
+                    "File Read Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error parsing service cost: " + e.getMessage(),
+                    "Invalid Data", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Add a new customer.
+    private void addNewCustomer() 
+    {
+        JTextField idField = new JTextField(15);
+        JTextField nameField = new JTextField(15);
+        JTextField plateField = new JTextField(15);
+
+        // Create a JList for multiple service type selection.
+        JList<String> serviceList = new JList<>(new String[]{
+            "Oil Change", "Battery Replacement", "Tire Rotation"
+        });
+        serviceList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        JScrollPane listScroller = new JScrollPane(serviceList);
+        listScroller.setPreferredSize(new Dimension(150, 60));
+
+        JTextField costField = new JTextField(15);
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0; gbc.gridy = 0;
+        panel.add(new JLabel("Customer ID:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 0;
+        panel.add(idField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1;
+        panel.add(new JLabel("Customer Name:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 1;
+        panel.add(nameField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2;
+        panel.add(new JLabel("Vehicle Plate:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 2;
+        panel.add(plateField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 3;
+        panel.add(new JLabel("Service Types:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 3;
+        panel.add(listScroller, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 4;
+        panel.add(new JLabel("Service Cost:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 4;
+        panel.add(costField, gbc);
+
+        int result = JOptionPane.showConfirmDialog(null, panel, 
+                "Add New Customer", JOptionPane.OK_CANCEL_OPTION);
+
+        if (result == JOptionPane.OK_OPTION) 
+        {
+            String id = idField.getText().trim();
+            String name = nameField.getText().trim();
+            String plate = plateField.getText().trim();
+            double cost;
+
+            try {
+                cost = Double.parseDouble(costField.getText().trim());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Please enter a valid number for cost.",
+                        "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            List<String> selectedServices = serviceList.getSelectedValuesList();
+            CustomerInfo customer = new CustomerInfo(id, name, plate);
+            for (String serviceType : selectedServices) 
+            {
+                ServiceInfo service = new ServiceInfo(serviceType, serviceType, cost, null, null);
+                customer.addService(service);
+            }
+
+            center.addCustomer(customer);  // Add customer to ServiceCenter.
+            center.processCustomerForLane(customer);  // Assign to service lane.
+
+            Object[] rowData = {
+                id, name, plate, String.join(", ", selectedServices), String.format("RM %.2f", cost)
+            };
+            tableModel.addRow(rowData);
+
+            JOptionPane.showMessageDialog(null, "Customer added successfully!",
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    // Open the transaction page for the selected customer.
+    private void openTransactionPage(int row) 
+    {
+        if (row < 0) 
+        {
+            JOptionPane.showMessageDialog(null, "Please select a customer to proceed with payment.");
+            return;
+        }
+
+        String customerId = (String) tableModel.getValueAt(row, 0);
+        CustomerInfo selectedCustomer = center.getCustomerById(customerId);
+
+        if (selectedCustomer != null) 
+        {
+            new TransactionPage(selectedCustomer, center, () -> 
+            {
+                tableModel.removeRow(row);  // Remove customer from the table.
+                center.removeCustomerById(customerId);  // Remove from ServiceCenter.
+            });
+        }
+    }
+
+    // Delete a customer.
+    private void deleteCustomer(int row) 
+    {
+        if (row < 0) 
+        {
+            JOptionPane.showMessageDialog(null, "Please select a row to delete.");
+            return;
+        }
+        String customerId = (String) tableModel.getValueAt(row, 0);
+        tableModel.removeRow(row);
+        center.removeCustomerById(customerId);
+    }
+}
