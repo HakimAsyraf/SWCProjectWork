@@ -1,0 +1,55 @@
+import javax.swing.JOptionPane;
+import java.io.Serializable;
+
+public class Transaction implements Serializable 
+{
+    private static final long serialVersionUID = 1L;
+
+    private CustomerInfo customer;
+    private double totalCost;
+
+    // Constructor initializes the transaction and triggers payment request.
+    public Transaction(CustomerInfo customer) 
+    {
+        this.customer = customer;
+        this.totalCost = calculateTotalCost();
+        requestPayment();  // Request payment via JOptionPane.
+    }
+
+    // Calculate the total cost by summing all services.
+    private double calculateTotalCost() 
+    {
+        return customer.getServices().stream()
+                .mapToDouble(ServiceInfo::getServiceCost)
+                .sum();
+    }
+
+    // Request payment from the customer using JOptionPane.
+    private void requestPayment() 
+    {
+        String message = "Customer: " + customer.getCustomerName() +
+                         "\nVehicle Plate: " + customer.getVehiclePlateNumber() +
+                         "\nTotal Cost: RM " + totalCost +
+                         "\nPlease proceed with the payment.";
+        JOptionPane.showMessageDialog(null, message, 
+                                      "Payment Required", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    // Return a summary of the transaction.
+    public String getTransactionSummary() 
+    {
+        return "Customer: " + customer.getCustomerName() +
+               ", Vehicle Plate: " + customer.getVehiclePlateNumber() +
+               ", Total Cost: RM " + totalCost;
+    }
+
+    public CustomerInfo getCustomer() 
+    {
+        return customer;
+    }
+
+    public double getTotalCost() 
+    {
+        return totalCost;
+    }
+}
