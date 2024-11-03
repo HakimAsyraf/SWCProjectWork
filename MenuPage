@@ -1,0 +1,56 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class MenuPage extends JFrame 
+{
+    private ServiceCenter center;  // Reference to the shared service center.
+
+    // Constructor to initialize the menu page with the service center.
+    public MenuPage(ServiceCenter center) 
+    {
+        this.center = center;
+
+        setTitle("Vehicle Service System - Menu");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Use a JPanel with GridLayout to ensure uniform button sizes.
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(4, 1, 10, 10));  // 4 rows, 1 column, 10px spacing.
+
+        // Create buttons for different menu options.
+        JButton manageCustomersButton = new JButton("Manage Customers");
+        JButton viewTransactionsButton = new JButton("View Transactions");
+        JButton logoutButton = new JButton("Logout");
+        JButton exitButton = new JButton("Exit");
+
+        // Add action listeners for button functionality.
+        manageCustomersButton.addActionListener(e -> {
+            new CustomerManagementPage(center);  // Open the customer management page.
+            dispose();  // Close the current menu page.
+        });
+
+        viewTransactionsButton.addActionListener(e -> center.displayCompletedTransactions());  // Show transactions.
+
+        logoutButton.addActionListener(e -> {
+            VehicleServiceApp.main(null);  // Restart the application.
+            dispose();  // Close the current window.
+        });
+
+        exitButton.addActionListener(e -> System.exit(0));  // Exit the program.
+
+        // Add buttons to the panel.
+        buttonPanel.add(manageCustomersButton);
+        buttonPanel.add(viewTransactionsButton);
+        buttonPanel.add(logoutButton);
+        buttonPanel.add(exitButton);
+
+        // Use BorderLayout to center the button panel within the frame.
+        setLayout(new BorderLayout());
+        add(buttonPanel, BorderLayout.CENTER);
+
+        setVisible(true);  // Display the window.
+    }
+}
