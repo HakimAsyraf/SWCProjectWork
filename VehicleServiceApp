@@ -1,0 +1,20 @@
+import javax.swing.*;
+
+public class VehicleServiceApp 
+{
+    public static void main(String[] args) 
+    {
+        ServiceCenter center = new ServiceCenter();
+
+        // Login dialog.
+        String username = JOptionPane.showInputDialog(null, "Enter username:");
+        String password = JOptionPane.showInputDialog(null, "Enter password:");
+
+        if ("Admin".equals(username) && "1234".equals(password)) 
+        {
+            new MenuPage(center);  // Open menu.
+        } else {
+            JOptionPane.showMessageDialog(null, "Invalid credentials!");
+        }
+    }
+}
