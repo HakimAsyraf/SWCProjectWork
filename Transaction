@@ -20,7 +20,7 @@ public class Transaction implements Serializable
     private double calculateTotalCost() 
     {
         return customer.getServices().stream()
-                .mapToDouble(ServiceInfo::getServiceCost)
+                .mapToDouble(CustomerInfo.ServiceInfo::getServiceCost)
                 .sum();
     }
 
