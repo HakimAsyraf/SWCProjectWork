@@ -27,14 +27,16 @@ public class MenuPage extends JFrame
         JButton exitButton = new JButton("Exit");
 
         // Add action listeners for button functionality.
-        manageCustomersButton.addActionListener(e -> {
+        manageCustomersButton.addActionListener(e -> 
+        {
             new CustomerManagementPage(center);  // Open the customer management page.
             dispose();  // Close the current menu page.
         });
 
         viewTransactionsButton.addActionListener(e -> center.displayCompletedTransactions());  // Show transactions.
 
-        logoutButton.addActionListener(e -> {
+        logoutButton.addActionListener(e -> 
+        {
             VehicleServiceApp.main(null);  // Restart the application.
             dispose();  // Close the current window.
         });
