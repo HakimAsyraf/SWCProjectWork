@@ -4,22 +4,22 @@ import java.util.Queue;
 import java.util.Stack;
 
 public class ServiceCenter implements Serializable 
-{
+{ //seriaizable to save and load data in file
     private static final long serialVersionUID = 1L;
 
-    // Data structures to manage customers, service lanes, and transactions.
+    // Data structures to manage customers in 3 service lanes, and its transactions.
     private LinkedList<CustomerInfo> customerList = new LinkedList<>();
     private Queue<CustomerInfo> lane1 = new LinkedList<>();
     private Queue<CustomerInfo> lane2 = new LinkedList<>();
     private Queue<CustomerInfo> lane3 = new LinkedList<>();
     private Stack<Transaction> completeStack = new Stack<>();
 
-    // Save customer data to a file for persistence.
-    public void saveData() 
+    // Save customer data to a file    public void saveData() 
     {
         try 
-        
+
         (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("customer_data.dat"))) 
+        //save of objects to a file named "customer_data.dat.
         {
             oos.writeObject(customerList);
         } catch (IOException e) {
@@ -32,7 +32,7 @@ public class ServiceCenter implements Serializable
     public void loadData() 
     {
         try 
-        
+
         (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("customer_data.dat"))) {
             customerList = (LinkedList<CustomerInfo>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
@@ -40,13 +40,13 @@ public class ServiceCenter implements Serializable
         }
     }
 
-    // Add a new customer to the system.
+    // Add cust
     public void addCustomer(CustomerInfo customer) 
     {
         customerList.add(customer);
     }
 
-    // Remove a customer by index from the list.
+    // Remove cust.
     public void removeCustomer(int index) 
     {
         if (index >= 0 && index < customerList.size()) 
@@ -55,7 +55,7 @@ public class ServiceCenter implements Serializable
         }
     }
 
-    // Retrieve a specific customer by their ID.
+    // Retrieve a specific cust from ID.
     public CustomerInfo getCustomerById(String customerId) 
     {
         for (CustomerInfo customer : customerList) 
@@ -65,23 +65,23 @@ public class ServiceCenter implements Serializable
                 return customer;
             }
         }
-        return null;  // Return null if customer is not found.
+        return null;  // Return null if cust not found.
     }
-
-    // Add a new transaction to the stack of completed transactions.
+    // Add transaction to the stack for completed transactions.
     public void addTransaction(Transaction transaction) 
     {
         completeStack.push(transaction);
     }
 
-    // Process customers by assigning them to appropriate service lanes.
+    // Process cust by assigning them to appropriate service lanes.
     public void processCustomerForLane(CustomerInfo customer) 
     {
         int serviceCount = customer.getServices().size();
         if (serviceCount <= 3) 
         {
             // Assign to Lane 1 or Lane 2 based on the size of the queues.
-            if (lane1.size() <= lane2.size()) {
+            if (lane1.size() <= lane2.size()) 
+            {
                 lane1.add(customer);
             } else {
                 lane2.add(customer);
@@ -128,10 +128,10 @@ public class ServiceCenter implements Serializable
 
     public void removeCustomerById(String customerId) 
     {
-    customerList.removeIf(customer -> customer.getCustomerId().equals(customerId));
+        customerList.removeIf(customer -> customer.getCustomerId().equals(customerId));
     }
 
-    // Retrieve the list of all customers.
+    // Retrieve the list of all customers from stack.
     public LinkedList<CustomerInfo> getCustomerList() 
     {
         return customerList;
