@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
+
 public class TransactionPage extends JFrame 
 {
     private CustomerInfo customer;
@@ -13,6 +14,7 @@ public class TransactionPage extends JFrame
         this.center = center;
         this.onPaymentSuccess = onPaymentSuccess;
 
+        //set jFrame size and layout
         setTitle("Transaction Page");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -42,10 +44,10 @@ public class TransactionPage extends JFrame
         sb.append("Services:\n");
 
         double totalCost = 0;
-        for (ServiceInfo service : customer.getServices()) 
+        for (CustomerInfo.ServiceInfo service : customer.getServices()) 
         {
             sb.append("  - ").append(service.getServiceType())
-              .append(": RM ").append(String.format("%.2f", service.getServiceCost())).append("\n");
+            .append(": RM ").append(String.format("%.2f", service.getServiceCost())).append("\n");
             totalCost += service.getServiceCost();
         }
 
@@ -56,7 +58,7 @@ public class TransactionPage extends JFrame
     private void processPayment() 
     {
         int result = JOptionPane.showConfirmDialog(
-            this, "Confirm payment?", "Payment Confirmation", JOptionPane.OK_CANCEL_OPTION);
+                this, "Confirm payment?", "Payment Confirmation", JOptionPane.OK_CANCEL_OPTION);
 
         if (result == JOptionPane.OK_OPTION) 
         {
