@@ -1,4 +1,5 @@
 import java.util.LinkedList;
+import java.time.*;
 
 public class CustomerInfo 
 {
@@ -16,12 +17,42 @@ public class CustomerInfo
     }
 
     public String getCustomerId() { return customerId; }
+
     public String getCustomerName() { return customerName; }
+
     public String getVehiclePlateNumber() { return vehiclePlateNumber; }
+
     public LinkedList<ServiceInfo> getServices() { return services; }
 
-    public void addService(ServiceInfo service) 
-    {
+    public void addService(ServiceInfo service) {
         services.add(service);
+    }
+
+    // Make ServiceInfo a static nested class
+    public static class ServiceInfo 
+    {
+        private String serviceId;
+        private String serviceType;
+        private double serviceCost;
+        private LocalDateTime serviceDate;
+        private LocalDateTime estimatedCompletionTime;
+
+        public ServiceInfo(String serviceId, String serviceType, double serviceCost, LocalDateTime serviceDate, LocalDateTime estimatedCompletionTime) {
+            this.serviceId = serviceId;
+            this.serviceType = serviceType;
+            this.serviceCost = serviceCost;
+            this.serviceDate = serviceDate;
+            this.estimatedCompletionTime = estimatedCompletionTime;
+        }
+
+        public String getServiceId() { return serviceId; }
+
+        public String getServiceType() { return serviceType; }
+
+        public double getServiceCost() { return serviceCost; }
+
+        public LocalDateTime getServiceDate() { return serviceDate; }
+
+        public LocalDateTime getEstimatedCompletionTime() { return estimatedCompletionTime; }
     }
 }
