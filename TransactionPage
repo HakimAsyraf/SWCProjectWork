@@ -5,10 +5,10 @@ import java.awt.*;
 public class TransactionPage extends JFrame 
 {
     private CustomerInfo customer;
-    private ServiceCenter center;
+    private CompleteStacks center;
     private Runnable onPaymentSuccess;
 
-    public TransactionPage(CustomerInfo customer, ServiceCenter center, Runnable onPaymentSuccess) 
+    public TransactionPage(CustomerInfo customer, CompleteStacks center, Runnable onPaymentSuccess) 
     {
         this.customer = customer;
         this.center = center;
