@@ -3,7 +3,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
-public class ServiceCenter implements Serializable 
+public class CompleteStacks implements Serializable 
 { //seriaizable to save and load data in file
     private static final long serialVersionUID = 1L;
 
