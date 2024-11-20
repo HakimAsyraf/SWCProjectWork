@@ -5,10 +5,10 @@ import java.awt.event.ActionListener;
 
 public class MenuPage extends JFrame 
 {
-    private ServiceCenter center;  // Reference to the shared service center.
+    private CompleteStacks center;  // Reference to the shared CompleteStacks.
 
-    // Constructor to initialize the menu page with the service center.
-    public MenuPage(ServiceCenter center) 
+    // Constructor to initialize the menu page with the CompleteStacks.
+    public MenuPage(CompleteStacks center) 
     {
         this.center = center;
 
