@@ -7,12 +7,12 @@ import java.util.LinkedList;
 
 public class CustomerManagementPage extends JFrame 
 {
-    private ServiceCenter center;  // Reference to the service center.
+    private CompleteStacks center;  // Reference to the CompleteStacks.
     private JTable table;
     private DefaultTableModel tableModel;
     private JTextArea lane1TextArea, lane2TextArea, lane3TextArea;  // Lanes display
 
-    public CustomerManagementPage(ServiceCenter center) 
+    public CustomerManagementPage(CompleteStacks center) 
     {
         this.center = center;
 
