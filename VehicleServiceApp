@@ -4,7 +4,7 @@ public class VehicleServiceApp
 {
     public static void main(String[] args) 
     {
-        ServiceCenter center = new ServiceCenter();
+        CompleteStacks center = new CompleteStacks();
 
         // Login dialog.
         String username = JOptionPane.showInputDialog(null, "Enter username:");
